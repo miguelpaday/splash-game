@@ -1,0 +1,10 @@
+.gradientContainer {
+  background: linear-gradient(90deg, #14181e 10%, #1f2531 70%);
+  border-radius: 10px;
+  border: 1px solid #6c778f23;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: center;
+}

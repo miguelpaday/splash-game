@@ -1,0 +1,30 @@
+.gameInfoContent {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+}
+
+.gameInfoIcon {
+  display: flex;
+  flex: 1;
+}
+
+.gameInfoValue {
+  display: flex;
+  flex: 4;
+  font-size: larger;
+  justify-content: center;
+}
+
+.icon {
+  /* background: paleturquoise; */
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3em;
+}

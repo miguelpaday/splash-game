@@ -1,0 +1,41 @@
+.rankingContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.rankingHeader {
+  display: flex;
+  flex: 1;
+  font-weight: 600;
+}
+
+.rankingTable {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  /* flex-grow: 0; */
+}
+
+.rankingTableRow {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  /* padding: 0px 20px; */
+}
+
+.rankingRows {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  border: 0;
+  padding: 0;
+  padding: 7px 31px;
+  color: white;
+  font-size: 0.8em;
+}
+
+.rankingIcon {
+  margin-right: 4px;
+  margin-bottom: 4px;
+}

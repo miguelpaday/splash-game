@@ -1,0 +1,78 @@
+.container {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: #14181e;
+  height: 100vh;
+  width: 100vw;
+}
+
+.game {
+  display: flex;
+  flex-direction: column;
+  /* background-color: rgb(168, 215, 170); */
+  min-width: 1400px;
+  min-height: 1000px;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.topHalf {
+  display: flex;
+  flex: 2;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 16px;
+  /* margin-bottom: 16px; */
+}
+
+.bottomHalf {
+  display: flex;
+  flex: 1;
+  flex-grow: 0;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.topLeft {
+  display: flex;
+  flex: 2;
+}
+
+.topRight {
+  display: flex;
+  flex-direction: column;
+  flex: 5;
+}
+
+.bottomLeft {
+  display: flex;
+  flex: 1;
+  /* background-color: rgb(153, 172, 71); */
+}
+
+.bottomRight {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* background-color: rgb(203, 122, 85); */
+}
+
+.gameInfo {
+  display: flex;
+  flex: 3;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.gameChart {
+  display: flex;
+  flex: 20;
+  padding-top: 16px;
+}
+
+.gameInfo > div {
+  display: flex;
+  flex: 1;
+}
