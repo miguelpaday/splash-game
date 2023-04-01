@@ -11,20 +11,20 @@ import Registration from '../Registration/Registration'
 import './GameContainer.css'
 
 export default function GameContainer() {
-  const {playerName}:IGameContext = useContext(GameInfoContext)
+  const {playerName, points, clock}:IGameContext = useContext(GameInfoContext)
 
   const gameInfoEntities: IGameInfoEntity[] = [
     {
       icon: "🏅",
-      value: "1,000"
+      value: playerName ? points : ''
     },
     {
       icon: "🙋🏻‍♂️",
-      value: "Miguel"
+      value: playerName
     },
     {
       icon: "🧭",
-      value: "11:30"
+      value: playerName ? clock : ''
     },
   ]
   
@@ -45,8 +45,8 @@ export default function GameContainer() {
           <div className="topRight">
             <div className='gameInfo'>
               {
-                gameInfoEntities.map((entity: IGameInfoEntity) => {
-                  return <div key={entity.value}><GameInfo  data={entity}/></div>
+                gameInfoEntities.map((entity: IGameInfoEntity, _: number) => {
+                  return <div key={_}><GameInfo  data={entity}/></div>
                 })
               }
             </div>

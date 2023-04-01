@@ -36,7 +36,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.ranking.header,
       border: 0,
-      color: "white"
+      color: "white",
+      padding: "3px 16px"
       
     },
     [`&.${tableCellClasses.body}`]: {
@@ -91,12 +92,6 @@ export default function Ranking() {
                                 )
                             })
                         }
-{/* 
-                    <StyledTableRow className='rankingTableRow'>
-                        <StyledTableCell component="th" scope="row" className={'rankingRows'}>aw</StyledTableCell>
-                        <StyledTableCell className={'rankingRows'}>aw</StyledTableCell>
-                        <StyledTableCell className={'rankingRows'}>aw</StyledTableCell>
-                    </StyledTableRow> */}
                     </TableBody>
                     </Table>
                 </TableContainer>

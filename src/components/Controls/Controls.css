@@ -1,0 +1,18 @@
+.controlContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.controlSteppers {
+  display: flex;
+  flex: 0;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.controlStartButton {
+  width: 100%;
+  display: flex;
+}

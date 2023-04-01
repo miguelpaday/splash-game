@@ -1,11 +1,11 @@
 import './Registration.css'
-import React, { ChangeEvent, useContext, useEffect, useState } from 'react'
-import { Button, TextField, useFormControl } from '@mui/material'
+import { ChangeEvent, useContext, useEffect, useState, KeyboardEvent } from 'react'
+import { Button, TextField } from '@mui/material'
 import Container from '../Container/Container'
 import { GameInfoContext, IGameContext } from '../../context/GameInfo/GameInfo.context'
 
 export default function Registration() {
-    const {setPlayerName}: IGameContext = useContext(GameInfoContext)
+    const {setPlayerName, startTimer}: IGameContext = useContext(GameInfoContext)
     const [_playerName, _setPlayerName] = useState("")
     
 
@@ -19,6 +19,13 @@ export default function Registration() {
 
     const handleSubmit = () => {
         setPlayerName(_playerName)
+        startTimer();
+    }
+
+    const handleEnterKey = (e: KeyboardEvent) => {
+        if(e.key === 'Enter'){
+            handleSubmit();
+        }
     }
     
 
@@ -44,6 +51,7 @@ export default function Registration() {
                     }
                 }
                 className='registrationPlayerName'
+                onKeyDown={handleEnterKey}
                 value={_playerName}
                 onChange={handlePlayerName} 
                 variant="outlined"/>

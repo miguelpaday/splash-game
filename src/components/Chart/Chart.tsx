@@ -17,7 +17,7 @@ export default function Chart() {
         last += last*0.5
         data.push({count: i, value: last})
     }
-    const multiplier = 0
+    const multiplier = 5.5
     const width = 800;
     const height = 400;
     const duration = 10;
@@ -76,9 +76,9 @@ export default function Chart() {
                 {
                     !!data && data.map((point: IChartData) => {
                         if(point.count === 1){
-                            return <div><span>0</span>{point.count}</div>
+                            return <div key={point.count}><span>0</span>{point.count}</div>
                         }
-                        return <div>{point.count}</div>
+                        return <div key={point.count}>{point.count}</div>
                     })
                 }
                     

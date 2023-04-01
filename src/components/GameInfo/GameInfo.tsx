@@ -1,5 +1,5 @@
 import './Gameinfo.css'
-import React from 'react'
+import React, { useEffect } from 'react'
 import GradientContainer from '../GradientContainer/GradientContainer'
 import { IGameInfoEntity } from '../../@types/GameInfo.type'
 
@@ -8,6 +8,18 @@ interface Props {
 }
 
 export default function GameInfo({data}: Props) {
+    
+
+    useEffect(() => {
+      let isMounted = true;
+
+    
+      return () => {
+        isMounted = false;
+      }
+    }, [])
+    
+
   return (
     <GradientContainer>
         <div className='gameInfoContent'>

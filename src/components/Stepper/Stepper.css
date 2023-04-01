@@ -1,0 +1,63 @@
+.stepperContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: #1f252f;
+  border: 2px solid #616b824c;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.stepperLabel {
+  font-size: 0.9em;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: #7f8aa4;
+}
+
+.stepper {
+  display: flex;
+  flex: 1;
+}
+
+.triangleDown {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid white;
+  border-radius: 12px;
+}
+
+.triangleUp {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid white;
+  border-radius: 12px;
+}
+
+.stepperButton {
+  /* background-color: yellow; */
+  margin: 0;
+  padding: 0;
+  min-width: 20px;
+  width: 32px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  flex: 1;
+}
+
+.speedSliderContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  margin-top: 16px;
+}
+
+.MuiSlider-markLabel {
+  color: "white";
+}
