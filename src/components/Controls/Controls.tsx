@@ -1,41 +1,39 @@
 import './Controls.css'
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { Button, Slider, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import { IPlayer } from '../../@types/Player.type'
+import { IPlayerBet } from '../../@types/Player.type'
 import Stepper from '../Stepper/Stepper'
 import Container from '../Container/Container'
+import { GameInfoContext } from '../../context/GameInfo/GameInfo.context'
+import { GameRoundContext } from '../../context/GameRound/GameRound.context'
 
-const TEST_DATA: IPlayer[] = [
+const TEST_DATA: IPlayerBet[] = [
     {
-        id: 1,
         name: "CPU 1",
         points: 0,
         multiplier: 0
     },
     {
-        id: 2,
         name: "CPU 2",
         points: 0,
         multiplier: 0
     },
     {
-        id: 3,
         name: "CPU 3",
         points: 0,
         multiplier: 0
     },
     {
-        id: 4,
         name: "CPU 4",
         points: 0,
         multiplier: 0
     },
     {
-        id: 5,
         name: "CPU 5",
         points: 0,
         multiplier: 0
-    },
+    }
+    
 ]
 
 
@@ -69,7 +67,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 
 export default function Controls() {
-
+    const {playerBet, setPlayerBet, hasStarted, setHasStarted} = useContext(GameRoundContext)
+    const {player1} = useContext(GameInfoContext)
+    
     let marks:({value: number, label: string})[] = [];
 
     for(let i = 1; i <= 5; i++){
@@ -78,22 +78,39 @@ export default function Controls() {
 
 
     const handleStartRound = () => {
-
+        setHasStarted(true)
     }
 
-    const valuetext = (value: number) =>  {
-        return `${value}°C`;
-      }
 
     const valueLabelFormat = (value: number) => {
         return marks.findIndex((mark) => mark.value === value);
     }
 
+    const handlePointsChange = (operation: number, steps: number) => {
+         setPlayerBet(prev =>({...prev, 
+            points:  operation > 0 ? 
+                (prev.points + steps):
+                (prev.points - steps) }))
+    }
+
+    const handleMultiplierChange = (operation: number, steps: number) => {
+        setPlayerBet(prev =>({...prev, 
+           multiplier:  operation > 0 ? 
+               (prev.multiplier + steps):
+               (prev.multiplier - steps) }))
+   }
+
+
   return (
     <div className='controlContainer'>
         <div className='controlSteppers'>
-            <Stepper label='Points' min={0} max={500} initial={50} steps={25} decimal={false}/>
-            <Stepper label='Multiplier'  min={0.5} max={10} initial={1} steps={0.25} decimal={true}/>
+            <Stepper label='Points' value={playerBet.points} min={0} 
+            setValue={handlePointsChange} 
+            max={500} 
+            initial={50} steps={25} decimal={false}/>
+            <Stepper label='Multiplier' value={playerBet.multiplier}
+            setValue={handleMultiplierChange} 
+            min={0.5} max={10} initial={1} steps={0.25} decimal={true}/>
         </div>
         <div className='controlBottom'>
         <Button 
@@ -107,7 +124,7 @@ export default function Controls() {
                     display: 'flex',
                     flex: 1
                 } }
-                
+            disabled={hasStarted}
             onClick={handleStartRound} 
             variant='contained'>
             Start
@@ -127,19 +144,24 @@ export default function Controls() {
                             <Table >
                             <TableHead >
                                 <TableRow className='rankingTableRow'>
-                                    <StyledTableCell className={'rankingRows'}>No.</StyledTableCell>
                                     <StyledTableCell className={'rankingRows'}>Name</StyledTableCell>
-                                    <StyledTableCell className={'rankingRows'}>Score</StyledTableCell>
+                                    <StyledTableCell className={'rankingRows'}>Points</StyledTableCell>
+                                    <StyledTableCell className={'rankingRows'}>Multiplier</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
+                                            <StyledTableRow className='rankingTableRow'>
+                                                <StyledTableCell component="th" scope="row" className={'rankingRows'}>{player1.name}</StyledTableCell>
+                                                <StyledTableCell className={'rankingRows'}>{hasStarted ? playerBet.points : '-'}</StyledTableCell>
+                                                <StyledTableCell className={'rankingRows'}>{hasStarted ? playerBet.multiplier.toFixed(2) : '-'}</StyledTableCell>
+                                            </StyledTableRow>
                                 {
-                                    TEST_DATA.map((player: IPlayer)=>{
+                                    TEST_DATA.map((otherPlayer: IPlayerBet)=>{
                                         return (
-                                            <StyledTableRow key={player.name} className='rankingTableRow'>
-                                                <StyledTableCell component="th" scope="row" className={'rankingRows'}>{player.id}</StyledTableCell>
-                                                <StyledTableCell className={'rankingRows'}>{player.name}</StyledTableCell>
-                                                <StyledTableCell className={'rankingRows'}>{player.points}</StyledTableCell>
+                                            <StyledTableRow key={otherPlayer.name} className='rankingTableRow'>
+                                                <StyledTableCell component="th" scope="row" className={'rankingRows'}>{otherPlayer.name}</StyledTableCell>
+                                                <StyledTableCell className={'rankingRows'}>{hasStarted ? otherPlayer.points : '-'}</StyledTableCell>
+                                                <StyledTableCell className={'rankingRows'}>{hasStarted ? otherPlayer.multiplier.toFixed(2) : '-'}</StyledTableCell>
                                             </StyledTableRow>
                                         )
                                     })
@@ -160,7 +182,6 @@ export default function Controls() {
                     aria-label="Speed"
                     defaultValue={1}
                     valueLabelFormat={valueLabelFormat}
-                    getAriaValueText={valuetext}
                     step={1}
                     max={5}
                     min={1}
