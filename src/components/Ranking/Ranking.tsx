@@ -1,36 +1,45 @@
 import './Ranking.css'
 import { styled } from '@mui/material/styles'
 import { TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Paper, Table, TableBody } from '@mui/material'
-import { IPlayer } from '../../@types/Player.type';
+import { IPlayerInfo } from '../../@types/Player.type';
+import { useContext, useState } from 'react';
+import { GameRoundContext } from '../../context/GameRound/GameRound.context';
 
 
-const TEST_DATA: IPlayer[] = [
-    {
-        id: 1,
-        name: "CPU 1",
-        points: 0
-    },
-    {
-        id: 2,
-        name: "CPU 2",
-        points: 0
-    },
-    {
-        id: 3,
-        name: "CPU 3",
-        points: 0
-    },
-    {
-        id: 4,
-        name: "CPU 4",
-        points: 0
-    },
-    {
-        id: 5,
-        name: "CPU 5",
-        points: 0
-    },
-]
+// let  TEST_DATA: IPlayerInfo[];
+let TEST_DATA: IPlayerInfo[] = Array(5).fill({
+    id: 0,
+    name: "-",
+    points: "-"
+})
+// [
+//     {
+//         id: 1,
+//         name: "CPU 1",
+//         points: 0
+//     },
+//     {
+//         id: 2,
+//         name: "CPU 2",
+//         points: 0
+//     },
+//     {
+//         id: 3,
+//         name: "CPU 3",
+//         points: 0
+//     },
+//     {
+//         id: 4,
+//         name: "CPU 4",
+//         points: 0
+//     },
+//     {
+//         id: 5,
+//         name: "CPU 5",
+//         points: 0
+//     },
+// ]
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -60,6 +69,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 export default function Ranking() {
 
+
   return (
         <div className="rankingContainer">
             <div className='rankingHeader'>
@@ -82,10 +92,10 @@ export default function Ranking() {
                     </TableHead>
                     <TableBody>
                         {
-                            TEST_DATA.map((player: IPlayer)=>{
+                            TEST_DATA !== undefined && TEST_DATA.map((player: IPlayerInfo, index)=>{
                                 return (
-                                    <StyledTableRow key={player.name} className='rankingTableRow'>
-                                        <StyledTableCell component="th" scope="row" className={'rankingRows'}>{player.id}</StyledTableCell>
+                                    <StyledTableRow key={player.name+index} className='rankingTableRow'>
+                                        <StyledTableCell component="th" scope="row" className={'rankingRows'}>{index+1}</StyledTableCell>
                                         <StyledTableCell className={'rankingRows'}>{player.name}</StyledTableCell>
                                         <StyledTableCell className={'rankingRows'}>{player.points}</StyledTableCell>
                                     </StyledTableRow>
