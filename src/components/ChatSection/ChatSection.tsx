@@ -1,8 +1,15 @@
 import './ChatSection.css'
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { Button, TextField } from '@mui/material'
+import { io } from 'socket.io-client'
+import { IMessage } from '../../@types/Chat.type'
+import { GameInfoContext } from '../../context/GameInfo/GameInfo.context'
+import { SocketContext } from '../../context/Socket/Socket.context'
+
 
 export default function ChatSection() {
+    const {player1} = useContext(GameInfoContext)
+    const {messages, socket} = useContext(SocketContext)
     const [chatContent, setChatContent] = useState("")
 
     const handleTyping = (e: ChangeEvent<HTMLInputElement>) => {
@@ -10,7 +17,14 @@ export default function ChatSection() {
     }
 
     const handleSend = () => {
-       
+       const msg: IMessage = {
+           name: player1.name,
+           message: chatContent
+       }
+
+       socket.emit('createMessage', msg)
+       console.log(msg)
+       setChatContent('');
     }
 
   return (
@@ -25,7 +39,15 @@ export default function ChatSection() {
             </div>
             <div className='chat'>
                 <div className="chatContainer">
+                {
+                    !!player1.id && !!messages && messages.map((message: IMessage, index)=>{
 
+                    return <div key={message.message+index} className='chatMessage'>
+                            <div className='chatSender'>{`${message.name}: `}</div>
+                            <div className='chatContent'>{`${message.message}`}</div>
+                        </div>
+                    })
+                }
                 </div>
                 <div className="chatInput">
                     <TextField 
@@ -39,6 +61,7 @@ export default function ChatSection() {
                             
                         }
                     }
+                    value={chatContent}
                     onChange={handleTyping}
                     className="chatField" variant='outlined'/>
                     <Button 
