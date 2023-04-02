@@ -92,23 +92,39 @@ export default function Controls() {
         return marks.findIndex((mark) => mark.value === value);
     }
 
-    const handlePointsChange = (operation: number, steps: number) => {
-         setPlayerBet(prev =>({...prev, 
+    const handlePointsChange = (operation: number, steps: number, min: number, max: number) => {
+          console.log(operation)
+        setPlayerBet(prev =>({...prev, 
             points:  operation > 0 ? 
-                (prev.points + steps):
-                (prev.points - steps) }))
+                prev.points+steps < max ?
+                     (prev.points + steps):
+                     prev.points:
+                prev.points - steps > min ?
+                     (prev.points - steps):
+                     prev.points
+             }))
     }
 
-    const handleMultiplierChange = (operation: number, steps: number) => {
+    const handleMultiplierChange = (operation: number, steps: number, min: number, max: number) => {
+        
         setPlayerBet(prev =>({...prev, 
            multiplier:  operation > 0 ? 
-               (prev.multiplier + steps):
-               (prev.multiplier - steps) }))
+                operation > min ?
+                    (prev.multiplier + steps):
+                    prev.multiplier:
+                operation < max ?
+                    (prev.multiplier - steps):
+                    prev.multiplier
+            }))
    }
 
    const handleSlider = (event: Event, newValue: number | number[]) => {
         setSlider(newValue as number)
     }
+
+    function valuetext(value: number) {
+        return `${value}x`;
+      }
 
 
   return (
@@ -175,7 +191,12 @@ export default function Controls() {
                                                 backgroundColor: player.id === player1.id ? "#3e4556" : ''
                                             }}
                                             className='rankingTableRow'>
-                                                <StyledTableCell component="th" scope="row" className={'rankingRows'}>{player.name}</StyledTableCell>
+                                                <StyledTableCell component="th" scope="row"
+                                                    style={{color: animationDone ? 
+                                                    player.multiplier < selectedMultiplier ? 
+                                                        'green' : 
+                                                        'red'
+                                                    : 'white'}} className={'rankingRows'}>{player.name}</StyledTableCell>
                                                 <StyledTableCell 
                                                     style={{color: animationDone ? 
                                                         player.multiplier < selectedMultiplier ? 
@@ -206,9 +227,11 @@ export default function Controls() {
                 <Container>
                     <Slider
                     aria-label="Speed"
+                    getAriaValueText={valuetext}
                     defaultValue={1}
                     value={slider}
                     valueLabelFormat={valueLabelFormat}
+                    valueLabelDisplay='auto'
                     onChange={handleSlider}
                     step={1}
                     max={5}

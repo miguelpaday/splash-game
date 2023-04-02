@@ -83,7 +83,7 @@ export default function ChatSection() {
                             {background: '#686868', color: 'gray'}}
                         onClick={handleSend}
                         className='sendButton' 
-                        disabled={!!!chatContent} 
+                        disabled={!(chatContent || player1.name) } 
                         variant='contained'>
                             Send
                     </Button>

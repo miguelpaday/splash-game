@@ -14,17 +14,22 @@ export const theme = createTheme({
           color: "#f54174"
         },
         markLabel: {
-          color: 'white'
+          color: 'white',
+        },
+        markActive: {
+          color: "green"
         },
         markLabelActive: {
-          color: "#f54174"
+          color: 'blue'
         }
       }
-    }
+    },
   },
     ranking: {
       odd: '#212731',
       even: '#181e26',
       header: '#14181e'
     }
-  })
+  },
+  
+  )

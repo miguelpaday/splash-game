@@ -11,7 +11,7 @@ interface Props {
     initial: number;
     decimal: boolean;
     value: number;
-    setValue: (operation: number, steps: number)=>void
+    setValue: (operation: number, steps: number, min: number, max: number)=>void
 }
 
 export default function Stepper({label, value, setValue, steps = 1, initial = 1, min = 1, max = 20, decimal}: Props) {
@@ -25,7 +25,7 @@ export default function Stepper({label, value, setValue, steps = 1, initial = 1,
         </div>
         <div className='stepper'>
           <Button style={{width: 10, minWidth: 40, display: 'flex', flex: 1, borderColor: "#616b824c"}}
-          onClick={()=>setValue(-1, steps)} variant="outlined" className='stepperButton'>
+          onClick={()=>setValue(-1, steps, min, max)} variant="outlined" className='stepperButton'>
             <div className="triangleDown"></div>
           </Button>
           <TextField 
@@ -38,7 +38,7 @@ export default function Stepper({label, value, setValue, steps = 1, initial = 1,
                             justifyContent: 'center',
                             flexGrow: 0,
                             height: 13,
-                            width: 60,
+                            width: 85,
                             margin: 0,
                             fontSize: 24
                         }
@@ -49,7 +49,7 @@ export default function Stepper({label, value, setValue, steps = 1, initial = 1,
                 
                 variant="outlined"/>
           <Button style={{width: 10, minWidth: 40, display: 'flex', flex: 1, borderColor: "#616b824c"}}
-          onClick={()=>setValue(1, steps)} variant="outlined" className='stepperButton'>
+          onClick={()=>setValue(1, steps, min, max)} variant="outlined" className='stepperButton'>
             <div className="triangleUp"></div>
           </Button>
         </div>
