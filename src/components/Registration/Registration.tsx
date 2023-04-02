@@ -5,7 +5,7 @@ import Container from '../Container/Container'
 import { GameInfoContext, IGameContext } from '../../context/GameInfo/GameInfo.context'
 
 export default function Registration() {
-    const {setPlayerName, startTimer}: IGameContext = useContext(GameInfoContext)
+    const {setPlayer1, player1,  startTimer}: IGameContext = useContext(GameInfoContext)
     const [_playerName, _setPlayerName] = useState("")
     
 
@@ -18,7 +18,7 @@ export default function Registration() {
     }, [])
 
     const handleSubmit = () => {
-        setPlayerName(_playerName)
+        setPlayer1(prev => ({...prev, name: _playerName, id: 1234}))
         startTimer();
     }
 

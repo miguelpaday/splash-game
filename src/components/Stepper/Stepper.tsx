@@ -10,18 +10,13 @@ interface Props {
     max: number;
     initial: number;
     decimal: boolean;
+    value: number;
+    setValue: (operation: number, steps: number)=>void
 }
 
-export default function Stepper({label, steps = 1, initial = 1, min = 1, max = 20, decimal}: Props) {
+export default function Stepper({label, value, setValue, steps = 1, initial = 1, min = 1, max = 20, decimal}: Props) {
 
-  const [value, setValue] = useState(initial)
-
-  const handleValueChange = (operation: number) => {
-      return setValue(prev => operation > 0 ? 
-                                (prev + steps):
-                                (prev - steps))
-
-  }
+  // const [value, setValue] = useState(initial)
 
   return (
     <div className='stepperContainer'>
@@ -30,7 +25,7 @@ export default function Stepper({label, steps = 1, initial = 1, min = 1, max = 2
         </div>
         <div className='stepper'>
           <Button style={{width: 10, minWidth: 40, display: 'flex', flex: 1, borderColor: "#616b824c"}}
-          onClick={()=>handleValueChange(-1)} variant="outlined" className='stepperButton'>
+          onClick={()=>setValue(-1, steps)} variant="outlined" className='stepperButton'>
             <div className="triangleDown"></div>
           </Button>
           <TextField 
@@ -54,7 +49,7 @@ export default function Stepper({label, steps = 1, initial = 1, min = 1, max = 2
                 
                 variant="outlined"/>
           <Button style={{width: 10, minWidth: 40, display: 'flex', flex: 1, borderColor: "#616b824c"}}
-          onClick={()=>handleValueChange(1)} variant="outlined" className='stepperButton'>
+          onClick={()=>setValue(1, steps)} variant="outlined" className='stepperButton'>
             <div className="triangleUp"></div>
           </Button>
         </div>

@@ -1,44 +1,20 @@
 import './Ranking.css'
 import { styled } from '@mui/material/styles'
 import { TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Paper, Table, TableBody } from '@mui/material'
-import { IPlayerInfo } from '../../@types/Player.type';
-import { useContext, useState } from 'react';
+import { IPlayerInfo, IPlayerRanking } from '../../@types/Player.type';
+import { useContext, useEffect, useState } from 'react';
 import { GameRoundContext } from '../../context/GameRound/GameRound.context';
+import { useSocket } from '../../context/Socket/Socket.context';
+import GameInfo from '../GameInfo/GameInfo';
+import { GameInfoContext } from '../../context/GameInfo/GameInfo.context';
 
 
 // let  TEST_DATA: IPlayerInfo[];
-let TEST_DATA: IPlayerInfo[] = Array(5).fill({
-    id: 0,
+let playerRanking: IPlayerRanking[] = Array(5).fill({
+    id: 55,
     name: "-",
-    points: "-"
+    score: "-"
 })
-// [
-//     {
-//         id: 1,
-//         name: "CPU 1",
-//         points: 0
-//     },
-//     {
-//         id: 2,
-//         name: "CPU 2",
-//         points: 0
-//     },
-//     {
-//         id: 3,
-//         name: "CPU 3",
-//         points: 0
-//     },
-//     {
-//         id: 4,
-//         name: "CPU 4",
-//         points: 0
-//     },
-//     {
-//         id: 5,
-//         name: "CPU 5",
-//         points: 0
-//     },
-// ]
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -68,6 +44,30 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }));
 
 export default function Ranking() {
+    const {player1, setPlayer1} = useContext(GameInfoContext)
+    const {animationDone} = useContext(GameRoundContext)
+    const {socket, isConnected} = useSocket();
+
+    useEffect(() => {
+      let isMounted = true;
+    
+        if(isConnected)
+        socket!.on('ranking', (response: IPlayerRanking[])=>{
+            const found = response.find(rank => {
+               return rank.id === player1.id
+            })
+            
+            if(found){
+                setPlayer1(prev => ({...prev, points: found.score}))
+            }
+            playerRanking = response
+        })
+
+      return () => {
+        isMounted = false
+      }
+    }, [animationDone])
+    
 
 
   return (
@@ -92,12 +92,16 @@ export default function Ranking() {
                     </TableHead>
                     <TableBody>
                         {
-                            TEST_DATA !== undefined && TEST_DATA.map((player: IPlayerInfo, index)=>{
+                            playerRanking !== undefined && playerRanking.map((player: IPlayerRanking, index)=>{
                                 return (
-                                    <StyledTableRow key={player.name+index} className='rankingTableRow'>
+                                    <StyledTableRow key={player.name+index}
+                                    style={{
+                                        backgroundColor: player.id === player1.id ? "#3e4556" : ''
+                                    }}
+                                    className='rankingTableRow'>
                                         <StyledTableCell component="th" scope="row" className={'rankingRows'}>{index+1}</StyledTableCell>
                                         <StyledTableCell className={'rankingRows'}>{player.name}</StyledTableCell>
-                                        <StyledTableCell className={'rankingRows'}>{player.points}</StyledTableCell>
+                                        <StyledTableCell className={'rankingRows'}>{player.score}</StyledTableCell>
                                     </StyledTableRow>
                                 )
                             })

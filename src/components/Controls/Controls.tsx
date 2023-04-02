@@ -1,41 +1,12 @@
 import './Controls.css'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Slider, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { IPlayerBet } from '../../@types/Player.type'
 import Stepper from '../Stepper/Stepper'
 import Container from '../Container/Container'
 import { GameInfoContext } from '../../context/GameInfo/GameInfo.context'
 import { GameRoundContext } from '../../context/GameRound/GameRound.context'
-
-const TEST_DATA: IPlayerBet[] = [
-    {
-        name: "CPU 1",
-        points: 0,
-        multiplier: 0
-    },
-    {
-        name: "CPU 2",
-        points: 0,
-        multiplier: 0
-    },
-    {
-        name: "CPU 3",
-        points: 0,
-        multiplier: 0
-    },
-    {
-        name: "CPU 4",
-        points: 0,
-        multiplier: 0
-    },
-    {
-        name: "CPU 5",
-        points: 0,
-        multiplier: 0
-    }
-    
-]
-
+import { useSocket } from '../../context/Socket/Socket.context'
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -67,17 +38,52 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 
 export default function Controls() {
-    const {playerBet, setPlayerBet, hasStarted, setHasStarted} = useContext(GameRoundContext)
-    const {player1} = useContext(GameInfoContext)
+    const {playerBet, setPlayerBet, hasStarted, setHasStarted, selectedMultiplier, animationDone, allPlayers, setAllPlayers} = useContext(GameRoundContext)
+    const {player1, setSlider, slider, setPlayer1} = useContext(GameInfoContext)
+    const [nextCountdown, setNextCountdown] = useState(10)
     
+    const {socket, isConnected} = useSocket()
+
     let marks:({value: number, label: string})[] = [];
 
     for(let i = 1; i <= 5; i++){
         marks.push({value: i, label: `${i}x`})
     }
 
+    useEffect(() => {
+      let isMounted = true
+
+      if(isConnected && isMounted){
+            socket!.on('otherJoin', (response: IPlayerBet[])=>{
+                setAllPlayers(response)
+            })
+
+            if(animationDone)            
+            socket!.emit('getResults',{}, (response: IPlayerBet[])=>{
+                setAllPlayers(response)
+            });
+        
+        }
+        
+        let cd = setInterval(()=>{
+            if(!animationDone || nextCountdown <= 0){
+                clearInterval(cd)
+                setNextCountdown(10)
+                return
+            }
+            setNextCountdown(prev => prev - 1)
+        }, 1000)
+
+    return () => {
+        isMounted = false
+        clearInterval(cd)
+      }
+    }, [animationDone])
+    
+
 
     const handleStartRound = () => {
+        setPlayer1(prev => ({...prev, points: prev.points - playerBet.points }))
         setHasStarted(true)
     }
 
@@ -100,6 +106,10 @@ export default function Controls() {
                (prev.multiplier - steps) }))
    }
 
+   const handleSlider = (event: Event, newValue: number | number[]) => {
+        setSlider(newValue as number)
+    }
+
 
   return (
     <div className='controlContainer'>
@@ -117,7 +127,7 @@ export default function Controls() {
             className='controlStartButton'
             style={ 
                 {
-                    background: 'linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%)',
+                    background: hasStarted ? '#7b8499' : 'linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%)',
                     padding: 12,  
                     marginTop: 20,
                     marginBottom: 20,
@@ -127,7 +137,7 @@ export default function Controls() {
             disabled={hasStarted}
             onClick={handleStartRound} 
             variant='contained'>
-            Start
+            {hasStarted ? 'Started' : "Start"}
         </Button>
             <div>
                 <div className="rankingContainer">
@@ -138,6 +148,13 @@ export default function Controls() {
                         <div className="rankingName">
                             Current Round
                         </div>
+                        {
+                            animationDone && (
+                            <div className="nextRound" style={{display: 'block', textAlign: 'right', flex: 1}}>
+                                Next Round in {nextCountdown}s
+                            </div>
+                            )
+                        }
                     </div>
                     <div className='rankingTable'>
                         <TableContainer sx={{ border: 1, borderRadius: 2, borderColor: "#616b824c"}}>
@@ -150,18 +167,27 @@ export default function Controls() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                            <StyledTableRow className='rankingTableRow'>
-                                                <StyledTableCell component="th" scope="row" className={'rankingRows'}>{player1.name}</StyledTableCell>
-                                                <StyledTableCell className={'rankingRows'}>{hasStarted ? playerBet.points : '-'}</StyledTableCell>
-                                                <StyledTableCell className={'rankingRows'}>{hasStarted ? playerBet.multiplier.toFixed(2) : '-'}</StyledTableCell>
-                                            </StyledTableRow>
                                 {
-                                    TEST_DATA.map((otherPlayer: IPlayerBet)=>{
+                                    !!allPlayers && allPlayers.map((player: IPlayerBet, index: number)=>{
                                         return (
-                                            <StyledTableRow key={otherPlayer.name} className='rankingTableRow'>
-                                                <StyledTableCell component="th" scope="row" className={'rankingRows'}>{otherPlayer.name}</StyledTableCell>
-                                                <StyledTableCell className={'rankingRows'}>{hasStarted ? otherPlayer.points : '-'}</StyledTableCell>
-                                                <StyledTableCell className={'rankingRows'}>{hasStarted ? otherPlayer.multiplier.toFixed(2) : '-'}</StyledTableCell>
+                                            <StyledTableRow key={index} 
+                                            style={{
+                                                backgroundColor: player.id === player1.id ? "#3e4556" : ''
+                                            }}
+                                            className='rankingTableRow'>
+                                                <StyledTableCell component="th" scope="row" className={'rankingRows'}>{player.name}</StyledTableCell>
+                                                <StyledTableCell 
+                                                    style={{color: animationDone ? 
+                                                        player.multiplier < selectedMultiplier ? 
+                                                            'green' : 
+                                                            'red'
+                                                        : 'white'}}>{hasStarted ? player.points : '-'}</StyledTableCell>
+                                                <StyledTableCell 
+                                                    style={{color: animationDone ? 
+                                                        player.multiplier < selectedMultiplier ? 
+                                                            'green' : 
+                                                            'red'
+                                                        : 'white'}}>{hasStarted ? player.multiplier.toFixed(2) : '-'}</StyledTableCell>
                                             </StyledTableRow>
                                         )
                                     })
@@ -181,7 +207,9 @@ export default function Controls() {
                     <Slider
                     aria-label="Speed"
                     defaultValue={1}
+                    value={slider}
                     valueLabelFormat={valueLabelFormat}
+                    onChange={handleSlider}
                     step={1}
                     max={5}
                     min={1}

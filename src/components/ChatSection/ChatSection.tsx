@@ -1,7 +1,6 @@
 import './ChatSection.css'
-import React, { ChangeEvent, useContext, useEffect, useState } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useContext, useEffect, useState } from 'react'
 import { Button, TextField } from '@mui/material'
-import { io } from 'socket.io-client'
 import { IMessage } from '../../@types/Chat.type'
 import { GameInfoContext } from '../../context/GameInfo/GameInfo.context'
 import { SocketContext } from '../../context/Socket/Socket.context'
@@ -9,12 +8,13 @@ import { SocketContext } from '../../context/Socket/Socket.context'
 
 export default function ChatSection() {
     const {player1} = useContext(GameInfoContext)
-    const {messages, socket} = useContext(SocketContext)
+    const {messages, socket, isConnected} = useContext(SocketContext)
     const [chatContent, setChatContent] = useState("")
 
     const handleTyping = (e: ChangeEvent<HTMLInputElement>) => {
         setChatContent(e.target.value)
     }
+    
 
     const handleSend = () => {
        const msg: IMessage = {
@@ -22,9 +22,15 @@ export default function ChatSection() {
            message: chatContent
        }
 
-       socket.emit('createMessage', msg)
-       console.log(msg)
+       socket!.emit('createMessage', msg)
+       
        setChatContent('');
+    }
+
+    const handleEnterKey = (e: KeyboardEvent) => {
+        if(e.key === 'Enter' && !!chatContent){
+            handleSend();
+        }
     }
 
   return (
@@ -63,6 +69,7 @@ export default function ChatSection() {
                     }
                     value={chatContent}
                     onChange={handleTyping}
+                    onKeyDown={handleEnterKey}
                     className="chatField" variant='outlined'/>
                     <Button 
                         sx={

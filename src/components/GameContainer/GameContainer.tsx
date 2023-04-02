@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { IGameInfoEntity } from '../../@types/GameInfo.type'
 import { GameInfoContext, IGameContext } from '../../context/GameInfo/GameInfo.context'
+import { GameRoundContext } from '../../context/GameRound/GameRound.context'
 import Chart from '../Chart/Chart'
 import ChatSection from '../ChatSection/ChatSection'
 import Controls from '../Controls/Controls'
@@ -11,20 +12,21 @@ import Registration from '../Registration/Registration'
 import './GameContainer.css'
 
 export default function GameContainer() {
-  const {playerName, points, clock}:IGameContext = useContext(GameInfoContext)
+  const {player1, slider}:IGameContext = useContext(GameInfoContext)
+  const {selectedMultiplier} = useContext(GameRoundContext)
 
   const gameInfoEntities: IGameInfoEntity[] = [
     {
       icon: "🏅",
-      value: playerName ? points : ''
+      value: !!player1.id ? player1.points : ''
     },
     {
       icon: "🙋🏻‍♂️",
-      value: playerName
+      value: player1.name
     },
     {
       icon: "🧭",
-      value: playerName ? clock : ''
+      value: !!player1.id ? player1.clock : ''
     },
   ]
   
@@ -36,7 +38,7 @@ export default function GameContainer() {
         <div className="topHalf">
           <div className="topLeft">
             {
-              !!playerName ?
+              !!player1.id ?
               <Controls/> :
               <Registration/>
 
@@ -51,7 +53,7 @@ export default function GameContainer() {
               }
             </div>
             <div className='gameChart'>
-              <Chart/>
+              <Chart chosenMultiplier={selectedMultiplier} speed={slider} />
             </div>
           </div>
         </div>
